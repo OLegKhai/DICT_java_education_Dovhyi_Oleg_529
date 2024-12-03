@@ -15,15 +15,26 @@ public class Hangman {
         int lives = 8;
         Set<Character> guessedLetters = new HashSet<>();
         Scanner scanner = new Scanner(System.in);
-
         while (lives > 0) {
             System.out.println(String.valueOf(currentWord));
+            System.out.println("Lives remaining: " + lives);
             System.out.print("Input a letter: > ");
-            char guess = scanner.nextLine().toLowerCase().charAt(0);
+            String input = scanner.nextLine();
+
+            if (input.length() != 1) {
+                System.out.println("You should input a single letter");
+                continue;
+            }
+
+            char guess = input.charAt(0);
+
+            if (!Character.isLowerCase(guess) || !Character.isAlphabetic(guess) || guess < 'a' || guess > 'z') {
+                System.out.println("Please enter a lowercase English letter");
+                continue;
+            }
 
             if (guessedLetters.contains(guess)) {
-                System.out.println("No improvements");
-                lives--;
+                System.out.println("You've already guessed this letter");
                 continue;
             }
 
