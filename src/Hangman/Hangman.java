@@ -11,9 +11,12 @@ public class Hangman {
         Random random = new Random();
         String secretWord = words[random.nextInt(words.length)];
 
+        String hint = secretWord.substring(0, 2) + "-".repeat(secretWord.length() - 2);
+
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Guess the word: > ");
+        System.out.print("Guess the word " + hint + ": > ");
         String userGuess = scanner.nextLine().toLowerCase();
+
         if (userGuess.equals(secretWord)) {
             System.out.println("You survived!");
         } else {
