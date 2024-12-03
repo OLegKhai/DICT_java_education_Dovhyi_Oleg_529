@@ -1,8 +1,27 @@
 import java.util.*;
 
 public class Hangman {
+
     public static void main(String[] args) {
-        System.out.println("HANGMAN");
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("HANGMAN");
+            System.out.print("Type \"play\" to play the game, \"exit\" to quit: > ");
+            String choice = scanner.nextLine().toLowerCase();
+
+            if (choice.equals("play")) {
+                playGame(scanner);
+            } else if (choice.equals("exit")) {
+                System.out.println("Goodbye!");
+                break;
+            } else {
+                System.out.println("Invalid input. Please type \"play\" or \"exit\".");
+            }
+        }
+    }
+
+    public static void playGame(Scanner scanner) {
 
         String[] words = {"python", "java", "javascript", "kotlin"};
 
@@ -14,7 +33,7 @@ public class Hangman {
 
         int lives = 8;
         Set<Character> guessedLetters = new HashSet<>();
-        Scanner scanner = new Scanner(System.in);
+
         while (lives > 0) {
             System.out.println(String.valueOf(currentWord));
             System.out.println("Lives remaining: " + lives);
@@ -53,7 +72,6 @@ public class Hangman {
 
                 if (!improved) {
                     System.out.println("No improvements");
-                    lives--;
                 }
             } else {
 
