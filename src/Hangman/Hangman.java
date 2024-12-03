@@ -12,46 +12,52 @@ public class Hangman {
         char[] currentWord = new char[secretWord.length()];
         Arrays.fill(currentWord, '-');
 
-        int attemptsLeft = 8;
+        int lives = 8;
         Set<Character> guessedLetters = new HashSet<>();
         Scanner scanner = new Scanner(System.in);
 
-        while (attemptsLeft > 0) {
+        while (lives > 0) {
             System.out.println(String.valueOf(currentWord));
-            System.out.println("Attempts left: " + attemptsLeft);
             System.out.print("Input a letter: > ");
             char guess = scanner.nextLine().toLowerCase().charAt(0);
 
             if (guessedLetters.contains(guess)) {
-                System.out.println("You've already guessed this letter.");
-            } else {
+                System.out.println("No improvements");
+                lives--;
+                continue;
+            }
 
-                guessedLetters.add(guess);
+            guessedLetters.add(guess);
 
-                if (secretWord.indexOf(guess) >= 0) {
-
-                    for (int i = 0; i < secretWord.length(); i++) {
-                        if (secretWord.charAt(i) == guess) {
+            if (secretWord.indexOf(guess) >= 0) {
+                boolean improved = false;
+                for (int i = 0; i < secretWord.length(); i++) {
+                    if (secretWord.charAt(i) == guess) {
+                        if (currentWord[i] == '-') {
                             currentWord[i] = guess;
+                            improved = true;
                         }
                     }
-                } else {
-                    // Неправильный ответ
-                    System.out.println("That letter doesn't appear in the word.");
                 }
 
-                attemptsLeft--;
+                if (!improved) {
+                    System.out.println("No improvements");
+                    lives--;
+                }
+            } else {
+
+                System.out.println("That letter doesn't appear in the word");
+                lives--;
             }
 
             if (String.valueOf(currentWord).equals(secretWord)) {
                 System.out.println(secretWord);
+                System.out.println("You guessed the word!");
                 System.out.println("You survived!");
                 return;
             }
         }
 
-        System.out.println("Thanks for playing!");
-        System.out.println("We'll see how well you did in the next stage.");
+        System.out.println("You lost!");
     }
 }
-
