@@ -11,6 +11,7 @@ public class MatrixProcessing {
             System.out.println("\nВыберите операцию:");
             System.out.println("1. Сложение матриц");
             System.out.println("2. Умножение матрицы на константу");
+            System.out.println("3. Умножение двух матриц");
             System.out.println("0. Выход");
             System.out.print("Ваш выбор: ");
             int choice = scanner.nextInt();
@@ -26,6 +27,9 @@ public class MatrixProcessing {
                     break;
                 case 2:
                     multiplyMatrixByConstant(scanner);
+                    break;
+                case 3:
+                    multiplyMatrices(scanner);
                     break;
                 default:
                     System.out.println("Неверный выбор. Попробуйте снова.");
@@ -65,6 +69,27 @@ public class MatrixProcessing {
         printMatrix(result);
     }
 
+    private static void multiplyMatrices(Scanner scanner) {
+        System.out.println("Введите размеры первой матрицы:");
+        int n1 = scanner.nextInt();
+        int m1 = scanner.nextInt();
+        int[][] matrixA = readMatrix(scanner, n1, m1);
+
+        System.out.println("Введите размеры второй матрицы:");
+        int n2 = scanner.nextInt();
+        int m2 = scanner.nextInt();
+
+        if (m1 != n2) {
+            System.out.println("ERROR: Количество столбцов первой матрицы должно быть равно количеству строк второй.");
+            return;
+        }
+
+        int[][] matrixB = readMatrix(scanner, n2, m2);
+
+        int[][] result = multiplyMatrices(matrixA, matrixB);
+        printMatrix(result);
+    }
+
     private static int[][] multiplyMatrix(int[][] matrix, int constant) {
         int n = matrix.length;
         int m = matrix[0].length;
@@ -72,6 +97,22 @@ public class MatrixProcessing {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 result[i][j] = matrix[i][j] * constant;
+            }
+        }
+        return result;
+    }
+
+    private static int[][] multiplyMatrices(int[][] matrixA, int[][] matrixB) {
+        int n1 = matrixA.length;
+        int m1 = matrixA[0].length;
+        int m2 = matrixB[0].length;
+        int[][] result = new int[n1][m2];
+
+        for (int i = 0; i < n1; i++) {
+            for (int j = 0; j < m2; j++) {
+                for (int k = 0; k < m1; k++) {
+                    result[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
             }
         }
         return result;
