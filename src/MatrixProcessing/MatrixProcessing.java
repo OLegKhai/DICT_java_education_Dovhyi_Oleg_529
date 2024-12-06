@@ -7,13 +7,13 @@ public class MatrixProcessing {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            // Меню выбора операции
             System.out.println("\nВыберите операцию:");
             System.out.println("1. Сложение матриц");
             System.out.println("2. Умножение матрицы на константу");
             System.out.println("3. Умножение двух матриц");
             System.out.println("4. Транспонирование матрицы");
             System.out.println("5. Вычисление определителя матрицы");
+            System.out.println("6. Нахождение обратной матрицы");
             System.out.println("0. Выход");
             System.out.print("Ваш выбор: ");
             int choice = scanner.nextInt();
@@ -39,10 +39,50 @@ public class MatrixProcessing {
                 case 5:
                     calculateDeterminant(scanner);
                     break;
+                case 6:
+                    findInverseMatrix(scanner);
+                    break;
                 default:
                     System.out.println("Неверный выбор. Попробуйте снова.");
             }
         }
+    }
+
+    private static void findInverseMatrix(Scanner scanner) {
+        System.out.println("Введите размер квадратной матрицы:");
+        int n = scanner.nextInt();
+        int[][] matrix = readMatrix(scanner, n, n);
+
+        int determinant = calculateDeterminant(matrix);
+        if (determinant == 0) {
+            System.out.println("ERROR: Матрица не имеет обратной, так как её определитель равен 0.");
+            return;
+        }
+
+        double[][] inverse = calculateInverseMatrix(matrix, determinant);
+        System.out.println("Обратная матрица:");
+        printMatrix(inverse);
+    }
+
+    private static double[][] calculateInverseMatrix(int[][] matrix, int determinant) {
+        int n = matrix.length;
+        double[][] adjugate = new double[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int[][] minor = getMinor(matrix, i, j);
+                adjugate[j][i] = Math.pow(-1, i + j) * calculateDeterminant(minor); // Транспонирование
+            }
+        }
+
+        double[][] inverse = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                inverse[i][j] = adjugate[i][j] / determinant;
+            }
+        }
+
+        return inverse;
     }
 
     private static void calculateDeterminant(Scanner scanner) {
@@ -64,17 +104,14 @@ public class MatrixProcessing {
     private static int calculateDeterminant(int[][] matrix) {
         int n = matrix.length;
 
-        // Базовый случай: матрица 1x1
         if (n == 1) {
             return matrix[0][0];
         }
 
-        // Базовый случай: матрица 2x2
         if (n == 2) {
             return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
         }
 
-        // Рекурсивный случай: разложение по первой строке
         int determinant = 0;
         for (int j = 0; j < n; j++) {
             determinant += Math.pow(-1, j) * matrix[0][j] * calculateDeterminant(getMinor(matrix, 0, j));
@@ -301,6 +338,15 @@ public class MatrixProcessing {
         for (int[] row : matrix) {
             for (int value : row) {
                 System.out.print(value + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static void printMatrix(double[][] matrix) {
+        for (double[] row : matrix) {
+            for (double value : row) {
+                System.out.printf("%.2f ", value);
             }
             System.out.println();
         }
