@@ -6,32 +6,35 @@ public class TicTacToe {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Зчитування стану гри
-        System.out.println("Enter cells: ");
-        String input = scanner.nextLine();
+        char[][] grid = {
+                {'_', '_', '_'},
+                {'_', '_', '_'},
+                {'_', '_', '_'}
+        };
 
-        // Перетворення на ігрове поле
-        char[][] grid = new char[3][3];
-        for (int i = 0; i < 9; i++) {
-            grid[i / 3][i % 3] = input.charAt(i);
-        }
-
-        // Друк ігрового поля
         printGrid(grid);
 
-        // Запропонувати користувачеві зробити хід
+        boolean isXTurn = true;
+
         while (true) {
+
             System.out.println("Enter the coordinates: ");
             String coordinates = scanner.nextLine();
 
-            // Обробка введення
-            if (processMove(grid, coordinates)) {
+            if (!processMove(grid, coordinates, isXTurn ? 'X' : 'O')) {
+                continue;
+            }
+
+            printGrid(grid);
+
+            String result = analyzeGame(grid);
+            if (!result.equals("Game not finished")) {
+                System.out.println(result);
                 break;
             }
-        }
 
-        // Друк оновленого поля
-        printGrid(grid);
+            isXTurn = !isXTurn;
+        }
     }
 
     private static void printGrid(char[][] grid) {
@@ -46,7 +49,7 @@ public class TicTacToe {
         System.out.println("---------");
     }
 
-    private static boolean processMove(char[][] grid, String input) {
+    private static boolean processMove(char[][] grid, String input, char symbol) {
         String[] parts = input.split(" ");
         if (parts.length != 2) {
             System.out.println("You should enter numbers!");
@@ -67,12 +70,42 @@ public class TicTacToe {
                 return false;
             }
 
-            grid[row][col] = 'X'; // Додаємо хід користувача
+            grid[row][col] = symbol;
             return true;
 
         } catch (NumberFormatException e) {
             System.out.println("You should enter numbers!");
             return false;
         }
+    }
+
+    private static String analyzeGame(char[][] grid) {
+        boolean xWins = checkWin(grid, 'X');
+        boolean oWins = checkWin(grid, 'O');
+        int emptyCount = count(grid, '_');
+
+        if (xWins) return "X wins";
+        if (oWins) return "O wins";
+        if (emptyCount == 0) return "Draw";
+        return "Game not finished";
+    }
+
+    private static boolean checkWin(char[][] grid, char symbol) {
+        for (int i = 0; i < 3; i++) {
+            if (grid[i][0] == symbol && grid[i][1] == symbol && grid[i][2] == symbol) return true;
+            if (grid[0][i] == symbol && grid[1][i] == symbol && grid[2][i] == symbol) return true;
+        }
+        return (grid[0][0] == symbol && grid[1][1] == symbol && grid[2][2] == symbol) ||
+                (grid[0][2] == symbol && grid[1][1] == symbol && grid[2][0] == symbol);
+    }
+
+    private static int count(char[][] grid, char symbol) {
+        int count = 0;
+        for (char[] row : grid) {
+            for (char cell : row) {
+                if (cell == symbol) count++;
+            }
+        }
+        return count;
     }
 }
