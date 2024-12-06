@@ -12,6 +12,7 @@ public class MatrixProcessing {
             System.out.println("1. Сложение матриц");
             System.out.println("2. Умножение матрицы на константу");
             System.out.println("3. Умножение двух матриц");
+            System.out.println("4. Транспонирование матрицы");
             System.out.println("0. Выход");
             System.out.print("Ваш выбор: ");
             int choice = scanner.nextInt();
@@ -30,6 +31,9 @@ public class MatrixProcessing {
                     break;
                 case 3:
                     multiplyMatrices(scanner);
+                    break;
+                case 4:
+                    transposeMatrix(scanner);
                     break;
                 default:
                     System.out.println("Неверный выбор. Попробуйте снова.");
@@ -90,6 +94,43 @@ public class MatrixProcessing {
         printMatrix(result);
     }
 
+    private static void transposeMatrix(Scanner scanner) {
+        System.out.println("Выберите способ транспонирования:");
+        System.out.println("1. Относительно главной диагонали");
+        System.out.println("2. Относительно побочной диагонали");
+        System.out.println("3. Относительно вертикальной оси");
+        System.out.println("4. Относительно горизонтальной оси");
+        System.out.print("Ваш выбор: ");
+        int choice = scanner.nextInt();
+
+        System.out.println("Введите размеры матрицы:");
+        int n = scanner.nextInt();
+        int m = scanner.nextInt();
+        int[][] matrix = readMatrix(scanner, n, m);
+
+        int[][] result = null;
+
+        switch (choice) {
+            case 1:
+                result = transposeMainDiagonal(matrix);
+                break;
+            case 2:
+                result = transposeSideDiagonal(matrix);
+                break;
+            case 3:
+                result = transposeVertical(matrix);
+                break;
+            case 4:
+                result = transposeHorizontal(matrix);
+                break;
+            default:
+                System.out.println("Неверный выбор.");
+                return;
+        }
+
+        printMatrix(result);
+    }
+
     private static int[][] multiplyMatrix(int[][] matrix, int constant) {
         int n = matrix.length;
         int m = matrix[0].length;
@@ -118,15 +159,52 @@ public class MatrixProcessing {
         return result;
     }
 
-    private static int[][] readMatrix(Scanner scanner, int n, int m) {
-        int[][] matrix = new int[n][m];
-        System.out.println("Введите элементы матрицы:");
+    private static int[][] transposeMainDiagonal(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[][] result = new int[m][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                matrix[i][j] = scanner.nextInt();
+                result[j][i] = matrix[i][j];
             }
         }
-        return matrix;
+        return result;
+    }
+
+    private static int[][] transposeSideDiagonal(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[][] result = new int[m][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                result[m - j - 1][n - i - 1] = matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    private static int[][] transposeVertical(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[][] result = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                result[i][m - j - 1] = matrix[i][j];
+            }
+        }
+        return result;
+    }
+
+    private static int[][] transposeHorizontal(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+        int[][] result = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                result[n - i - 1][j] = matrix[i][j];
+            }
+        }
+        return result;
     }
 
     private static int[][] addMatrices(int[][] matrixA, int[][] matrixB) {
@@ -139,6 +217,17 @@ public class MatrixProcessing {
             }
         }
         return result;
+    }
+
+    private static int[][] readMatrix(Scanner scanner, int n, int m) {
+        int[][] matrix = new int[n][m];
+        System.out.println("Введите элементы матрицы:");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                matrix[i][j] = scanner.nextInt();
+            }
+        }
+        return matrix;
     }
 
     private static void printMatrix(int[][] matrix) {
